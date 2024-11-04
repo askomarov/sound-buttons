@@ -1,0 +1,21 @@
+.hero-swiper {
+  position: relative;
+}
+
+.swiper__button {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  transform-origin: center;
+  left: 0;
+
+  &--next {
+    left: initial;
+    right: 0;
+
+    .button__icon {
+      transform: rotate(180deg);
+    }
+  }
+}

@@ -1,0 +1,35 @@
+---
+import { Icon } from 'astro-icon/components';
+interface Props {
+  hasIcon?: boolean;
+  isOpen?: boolean;
+}
+
+const { hasIcon, isOpen, ...props } = Astro.props;
+---
+
+<div
+  class="base-accordion-item"
+  class:list={isOpen ? 'is-open' : ''}
+  {...props}
+>
+  <button
+    type="button"
+    class="base-accordion-item__header"
+    aria-label="toggle accordion"
+  >
+    <slot name="title" />
+    {
+      hasIcon && (
+        <span class="base-accordion-item__icon">
+          <Icon name="arrow-down-16" />
+        </span>
+      )
+    }
+  </button>
+  <div class="base-accordion-item__content">
+    <div class="base-accordion-item__content-hidden">
+      <slot name="content" />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+---
+import AccordionAstro from '@components/AccordionAstro/AccordionAstro';
+import BaseAccordion from '@components/BaseAccordion/BaseAccordion';
+const accItems = [
+  {
+    title: 'Accordion title 1',
+    content: 'Accordion content 1',
+    isOpen: true
+  },
+  {
+    title: 'Accordion title 2',
+    content: 'Accordion content 2',
+    isOpen: false
+  }
+];
+---
+
+<section>
+  <p>base-accordion-parent without data-single</p>
+  <BaseAccordion class:list="my-acc-parent">
+    {
+      accItems.map((item) => (
+        <AccordionAstro hasIcon={true} isOpen={item.isOpen}>
+          <p slot="title">{item.title}</p>
+          <div slot="content">
+            <p>{item.content}</p>
+          </div>
+        </AccordionAstro>
+      ))
+    }
+    <AccordionAstro>
+      <p slot="title">Accordion with img, no icon</p>
+      <div slot="content">
+        <p>Content</p>
+        <img
+          src="./assets/mountain-min.jpg"
+          width="320"
+          height="213"
+          alt="image"
+        />
+      </div>
+    </AccordionAstro>
+  </BaseAccordion>
+  <p>base-accordion-parent with data-single</p>
+  <BaseAccordion class:list="my-acc-parent" data-single>
+    {
+      accItems.map((item) => (
+        <AccordionAstro hasIcon>
+          <p slot="title">{item.title}</p>
+          <div slot="content">
+            <p>{item.content}</p>
+          </div>
+        </AccordionAstro>
+      ))
+    }
+  </BaseAccordion>
+</section>
+
+<style>
+  .my-acc-parent {
+    display: grid;
+    gap: 12px;
+  }
+</style>

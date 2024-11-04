@@ -1,0 +1,90 @@
+---
+interface Props {}
+
+const {} = Astro.props;
+---
+
+<tilt-parent class="tilt-parent">
+  <div class="tilt-parent___content">
+    <slot />
+  </div>
+</tilt-parent>
+
+<script>
+  // tilt it means that the parent element will be trasformed by the mouse movement
+  class TiltParent extends HTMLElement {
+    private handleMouseMove: (_e: MouseEvent) => void;
+    private handleMouseLeave: () => void;
+    constructor() {
+      super();
+      const parent = this;
+      const content: HTMLElement = parent.querySelector(
+        '.tilt-parent___content'
+      );
+      // MAX_ROTATION_DEGREES for the maximum rotation in degrees
+      const MAX_ROTATION_DEGREES = 45;
+      const HALF_ROTATION_DEGREES = MAX_ROTATION_DEGREES / 2;
+
+      // LERP_FACTOR for smoother transitions its need to be between 0.1 and 1
+      const LERP_FACTOR = 0.1;
+
+      let prevX = 0;
+      let prevY = 0;
+      let animationFrameId: number | null = null; // Для отмены анимации
+
+      // LERP for smoother transitions
+      const lerp = (v0: number, v1: number, t: number): number =>
+        (1 - t) * v0 + t * v1;
+
+      this.handleMouseMove = (e: MouseEvent) => {
+        if (!parent || !content) return;
+        const rect = parent.getBoundingClientRect();
+        const width = rect.width;
+        const height = rect.height;
+
+        const mouseX = (e.clientX - rect.left) * MAX_ROTATION_DEGREES;
+        const mouseY = (e.clientY - rect.top) * MAX_ROTATION_DEGREES;
+
+        const rX = lerp(
+          prevX,
+          (mouseY / height - HALF_ROTATION_DEGREES) * -1,
+          LERP_FACTOR
+        );
+        const rY = lerp(
+          prevY,
+          mouseX / width - HALF_ROTATION_DEGREES,
+          LERP_FACTOR
+        );
+
+        // Update previous values for next frame
+        prevX = rX;
+        prevY = rY;
+        content.style.transition = 'none';
+        content.style.transform = `perspective(1000px) rotateY(${rY}deg) rotateX(${rX}deg)`;
+      };
+
+      this.handleMouseLeave = () => {
+        if (!parent || !content) return;
+        content.style.transition = 'transform 0.3s ease';
+        content.style.transform = 'perspective(1000px) rotateY(0) rotateX(0)';
+        prevX = 0;
+        prevY = 0;
+
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      };
+      // Добавление слушателей событий
+      parent.addEventListener('mousemove', (e) => {
+        animationFrameId = requestAnimationFrame(() => this.handleMouseMove(e));
+      });
+      parent.addEventListener('mouseleave', this.handleMouseLeave);
+    }
+
+    // Метод вызывается при удалении элемента из DOM
+    disconnectedCallback() {
+      this.removeEventListener('mousemove', this.handleMouseMove);
+      this.removeEventListener('mouseleave', this.handleMouseLeave);
+    }
+  }
+
+  customElements.define('tilt-parent', TiltParent);
+</script>

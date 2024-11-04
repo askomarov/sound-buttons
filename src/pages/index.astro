@@ -1,0 +1,116 @@
+---
+import Container from '@components/Container/Container';
+import Modal from '@components/Modal/Modal';
+import myImage from '@img/mountain.jpg';
+import MainLayout from '@layouts/Main/Main';
+import { Picture } from 'astro:assets';
+import Button from '@components/Button/Button';
+import ModalPolicy from '@components/ModalPolicy/ModalPolicy';
+import TiltParent from '@components/TiltParent/TiltParent';
+import ButtonFlair from '@components/ButtonFlair/ButtonFlair';
+import AccordionSection from '@blocks/AccordionSection/AccordionSection';
+---
+
+<MainLayout title="Главная" description="Описание">
+  <Container>
+    <AccordionSection />
+  </Container>
+  <section class="hero">
+    ButtonFlair with decor animation<br />
+    <ButtonFlair>funny button</ButtonFlair>
+    <ButtonFlair>button 💘</ButtonFlair>
+    <div class="hero__container container">
+      <h2>Hello swiper</h2>
+      <div class="swiper hero-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide hero-slide">
+            <picture>
+              <img
+                src="./assets/mountain-min.jpg"
+                width="320"
+                height="213"
+                alt="image"
+              />
+            </picture>
+          </div>
+          <div class="swiper-slide hero-slide">
+            <Picture
+              src={myImage}
+              alt="Example image."
+              quality={'high'}
+              formats={['webp']}
+              fallbackFormat="jpg"
+              width={800}
+              densities={[2]}
+            />
+          </div>
+        </div>
+        <div class="hero__pagination swiper-pagination"></div>
+        <Button
+          icon="arrow-right"
+          class="swiper__button swiper__button--prev"
+          iconPosBefore
+        />
+        <Button
+          icon="arrow-right"
+          class="swiper__button swiper__button--next"
+          iconPosBefore
+        />
+      </div>
+    </div>
+  </section>
+  <section>
+    <Container>
+      <Button
+        as="a"
+        target=""
+        href="/"
+        text="Стандартная модалка"
+        modal="example"
+      />
+      <Button text="Mодалка фиксированная по высоте" modal="policy" />
+    </Container>
+  </section>
+  <section>
+    <Container>
+      <div class="list" style="columns: 300px;">
+        {
+          [1, 2, 3].map(() => (
+            <TiltParent>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
+              quod, voluptates, quae, quos quidem quibusdam dolorum consequuntur
+              voluptatum nemo quia doloremque. Quisquam voluptates, quae, quos
+              quidem quibusdam dolorum consequuntur voluptatum nemo quia
+              doloremque.
+            </TiltParent>
+          ))
+        }
+
+        <TiltParent>
+          <img
+            src="https://picsum.photos/300/400"
+            width="300"
+            height="400"
+            alt="image"
+          />
+        </TiltParent>
+        <TiltParent>
+          <img
+            src="./assets/mountain-min.jpg"
+            width="320"
+            height="213"
+            alt="image"
+          />
+        </TiltParent>
+      </div>
+    </Container>
+  </section>
+
+  <Fragment slot="modals">
+    <Modal name="example">
+      <h3>Example modal</h3>
+      <button type="button" data-close-modal>закрыть</button>
+    </Modal>
+    <ModalPolicy />
+  </Fragment>
+</MainLayout>

@@ -1,0 +1,45 @@
+.btn-flair {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 20px 24px;
+  border-radius: 5px;
+  border: 0;
+  font-size: 1.2rem;
+  cursor: pointer;
+  position: relative;
+  overflow: clip;
+  display: inline-block;
+}
+
+.btn-flair__content {
+  position: relative;
+  z-index: 1;
+  font-weight: 700;
+  mix-blend-mode: exclusion;
+  // mix-blend-mode: normal;
+  // mix-blend-mode: multiply;
+  color: #ffffff;
+}
+
+.btn-flair__circle {
+  transform: scale(0);
+  transform-origin: 0 0;
+  will-change: transform;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+
+  &::after {
+    content: "";
+    position: absolute;
+    aspect-ratio: 1;
+    width: 150%;
+    border-radius: 50%;
+    display: block;
+    left: 0;
+    top: 0;
+    background: #c6c5bc;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+}

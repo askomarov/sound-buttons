@@ -1,0 +1,59 @@
+---
+interface Props {
+  single?: boolean;
+  className?: string;
+}
+
+const { single = false, className, ...props } = Astro.props;
+---
+
+<base-accordion
+  class:list={['base-accordion-parent', className]}
+  data-single={single}
+  {...props}
+>
+  <slot />
+</base-accordion>
+<script>
+  class BaseAccordion extends HTMLElement {
+    parent: HTMLElement;
+    accItems: HTMLElement[];
+    accButtons: HTMLElement[];
+    constructor() {
+      super();
+      this.parent = this;
+      this.accItems = Array.from(
+        this.parent.querySelectorAll('.base-accordion-item')
+      ) as HTMLElement[];
+      this.accButtons = Array.from(
+        this.parent.querySelectorAll('.base-accordion-item__header')
+      ) as HTMLElement[];
+      this.initEvents();
+    }
+
+    openAccordion(evt) {
+      const accItem = (evt.target as Element).closest('.base-accordion-item');
+
+      if (this.parent && this.parent.hasAttribute('data-single')) {
+        this.accItems.forEach((item) => {
+          if (item !== accItem && item.classList.contains('is-open')) {
+            item.classList.remove('is-open');
+          }
+        });
+      }
+
+      accItem.classList.toggle('is-open');
+    }
+    initEvents() {
+      this.accButtons.forEach((button) => {
+        button.addEventListener('click', this.openAccordion.bind(this));
+      });
+    }
+    disconnectedCallback() {
+      this.accButtons.forEach((button) => {
+        button.removeEventListener('click', this.openAccordion.bind(this));
+      });
+    }
+  }
+  customElements.define('base-accordion', BaseAccordion);
+</script>

@@ -1,0 +1,49 @@
+{
+  "name": "astro-template",
+  "type": "module",
+  "browserslist": [
+    "last 3 versions",
+    "IE 11",
+    "Firefox ESR"
+  ],
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev --host",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint:prettier": "prettier -w **/*.{js,jsx,ts,tsx,md,mdx,astro} --config .prettierrc.cjs",
+    "lint:eslint": "eslint src/**/*.{js,ts,jsx,tsx,astro} --fix",
+    "lint:stylelint": "stylelint src/**/*.scss",
+    "lint": "npm run lint:prettier & npm run lint:eslint & npm run lint:stylelint",
+    "gen:component": "node ./util/component/gen-component",
+    "robots": "node create-robots-file.mjs",
+    "createWebp": ""
+  },
+  "dependencies": {
+    "astro": "^4.1.1",
+    "gsap": "^3.12.5",
+    "scroll-lock": "2.1.5",
+    "typescript": "^5.5.4"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.4",
+    "@types/scroll-lock": "^2.1.3",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "astro-icon": "^1.0.2",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8.50.0",
+    "eslint-plugin-astro": "^0.29.0",
+    "postcss": "^8.4.30",
+    "prettier": "^3.1.1",
+    "prettier-plugin-astro": "^0.12.3",
+    "sass": "^1.67.0",
+    "stylelint": "^16.1.0",
+    "stylelint-config-htmlacademy": "^4.0.1",
+    "stylelint-scss": "^6.0.0",
+    "swiper": "^11.1.4",
+    "vite-plugin-sass-glob-import": "3.0.2"
+  }
+}

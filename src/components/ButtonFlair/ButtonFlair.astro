@@ -1,0 +1,179 @@
+---
+interface Props {}
+
+const {} = Astro.props;
+---
+
+<button-flair type="button" class="btn-flair">
+  <span class="btn-flair__content">
+    <slot />
+  </span>
+  <span class="btn-flair__circle"></span>
+</button-flair>
+
+<script>
+  import gsap from 'gsap';
+
+  class ButtonFlair extends HTMLElement {
+    block: HTMLElement;
+    DOM: { button: HTMLElement; flair: HTMLElement };
+    xSet: (_value: number) => void;
+    ySet: (_value: number) => void;
+    hasFill: boolean;
+
+    constructor() {
+      super();
+      this.block = this;
+      this.init();
+      this.initEvents();
+    }
+
+    init() {
+      this.DOM = {
+        button: this.block,
+        flair: this.querySelector('.btn-flair__circle')
+      };
+
+      this.xSet = gsap.quickSetter(this.DOM.flair, 'xPercent') as (
+        _value: number
+      ) => void;
+      this.ySet = gsap.quickSetter(this.DOM.flair, 'yPercent') as (
+        _value: number
+      ) => void;
+      this.hasFill = this.DOM.button.classList.contains('btn-flair--fill');
+    }
+
+    getXY(e: MouseEvent) {
+      const { left, top, width, height } =
+        this.DOM.button.getBoundingClientRect();
+
+      const xTransformer = gsap.utils.pipe(
+        gsap.utils.mapRange(0, width, 0, 100),
+        gsap.utils.clamp(0, 100)
+      );
+
+      const yTransformer = gsap.utils.pipe(
+        gsap.utils.mapRange(0, height, 0, 100),
+        gsap.utils.clamp(0, 100)
+      );
+
+      return {
+        x: xTransformer(e.clientX - left),
+        y: yTransformer(e.clientY - top)
+      };
+    }
+
+    adjustValue(val: number): number {
+      if (val > 90) {
+        return val + 20;
+      } else if (val < 10) {
+        return val - 20;
+      } else {
+        return val;
+      }
+    }
+
+    handleMouseEnter(e: MouseEvent) {
+      const { x, y } = this.getXY(e);
+
+      this.xSet(x);
+      this.ySet(y);
+
+      if (this.hasFill) {
+        gsap.to(this.DOM.flair, {
+          opacity: 1,
+          duration: 1,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.to(this.DOM.flair, {
+          scale: 1,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      }
+    }
+    handleMouseLeave(e: MouseEvent) {
+      const { x, y } = this.getXY(e);
+
+      gsap.killTweensOf(this.DOM.flair);
+
+      if (this.hasFill) {
+        gsap.to(this.DOM.flair, {
+          xPercent: this.adjustValue(x),
+          yPercent: this.adjustValue(y),
+          opacity: 0,
+          duration: 1,
+          ease: 'power2.out'
+        });
+      } else {
+        gsap.to(this.DOM.flair, {
+          xPercent: this.adjustValue(x),
+          yPercent: this.adjustValue(y),
+          scale: 0,
+          duration: 0.3,
+          ease: 'power2.out'
+        });
+      }
+    }
+    handleMouseMove(e: MouseEvent) {
+      const { x, y } = this.getXY(e);
+
+      gsap.to(this.DOM.flair, {
+        xPercent: x,
+        yPercent: y,
+        duration: this.hasFill ? 1 : 0.4,
+        ease: 'power2'
+      });
+    }
+
+    handleMouseDown() {
+      gsap.to(this.DOM.flair, {
+        scale: 0.6,
+        duration: 0.2,
+        ease: 'power2.out'
+      });
+    }
+
+    handleMouseUp() {
+      gsap.to(this.DOM.flair, {
+        scale: 1,
+        duration: 0.2,
+        ease: 'power2.out'
+      });
+    }
+
+    initEvents() {
+      this.DOM.button.addEventListener(
+        'mouseenter',
+        this.handleMouseEnter.bind(this)
+      );
+
+      this.DOM.button.addEventListener(
+        'mouseleave',
+        this.handleMouseLeave.bind(this)
+      );
+
+      this.DOM.button.addEventListener(
+        'mousemove',
+        this.handleMouseMove.bind(this)
+      );
+      this.DOM.button.addEventListener(
+        'mousedown',
+        this.handleMouseDown.bind(this)
+      );
+      this.DOM.button.addEventListener(
+        'mouseup',
+        this.handleMouseUp.bind(this)
+      );
+    }
+    disconnectedCallback() {
+      this.DOM.button.removeEventListener('mouseenter', this.handleMouseEnter);
+      this.DOM.button.removeEventListener('mousemove', this.handleMouseMove);
+      this.DOM.button.removeEventListener('mouseleave', this.handleMouseLeave);
+      this.DOM.button.removeEventListener('mousedown', this.handleMouseDown);
+      this.DOM.button.removeEventListener('mouseup', this.handleMouseUp);
+    }
+  }
+  customElements.define('button-flair', ButtonFlair);
+</script>

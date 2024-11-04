@@ -1,0 +1,12 @@
+.footer {
+  padding: 12px 0;
+  width: 100%;
+  background-image: url("./assets/mountain-min.jpg");
+}
+
+.footer__text {
+  text-align: center;
+  font-size: size(20);
+  color: $color-white;
+  line-height: 1;
+}

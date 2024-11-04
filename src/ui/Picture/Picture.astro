@@ -1,0 +1,24 @@
+---
+interface Props {
+  name: string;
+  type: 'jpg' | 'png' | 'jpeg';
+  alt: string;
+  width: number;
+  height: number;
+  folder?: string;
+}
+
+const { name, type, alt, width, height, folder = 'img' } = Astro.props;
+const src = `./${folder}/${name}`;
+---
+
+<picture>
+  <source srcset=`${src}.webp, ${src}@2x.webp 2x` type="image/webp" />
+  <img
+    src=`${src}.${type}`
+    srcset=`${src}@2x.${type} 2x`
+    alt={alt}
+    width={width}
+    height={height}
+  />
+</picture>
