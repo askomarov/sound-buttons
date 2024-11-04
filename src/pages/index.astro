@@ -1,116 +1,94 @@
 ---
-import Container from '@components/Container/Container';
-import Modal from '@components/Modal/Modal';
-import myImage from '@img/mountain.jpg';
 import MainLayout from '@layouts/Main/Main';
-import { Picture } from 'astro:assets';
 import Button from '@components/Button/Button';
-import ModalPolicy from '@components/ModalPolicy/ModalPolicy';
-import TiltParent from '@components/TiltParent/TiltParent';
-import ButtonFlair from '@components/ButtonFlair/ButtonFlair';
-import AccordionSection from '@blocks/AccordionSection/AccordionSection';
 ---
 
 <MainLayout title="Главная" description="Описание">
-  <Container>
-    <AccordionSection />
-  </Container>
-  <section class="hero">
-    ButtonFlair with decor animation<br />
-    <ButtonFlair>funny button</ButtonFlair>
-    <ButtonFlair>button 💘</ButtonFlair>
-    <div class="hero__container container">
-      <h2>Hello swiper</h2>
-      <div class="swiper hero-swiper">
-        <div class="swiper-wrapper">
-          <div class="swiper-slide hero-slide">
-            <picture>
-              <img
-                src="./assets/mountain-min.jpg"
-                width="320"
-                height="213"
-                alt="image"
-              />
-            </picture>
-          </div>
-          <div class="swiper-slide hero-slide">
-            <Picture
-              src={myImage}
-              alt="Example image."
-              quality={'high'}
-              formats={['webp']}
-              fallbackFormat="jpg"
-              width={800}
-              densities={[2]}
-            />
-          </div>
-        </div>
-        <div class="hero__pagination swiper-pagination"></div>
-        <Button
-          icon="arrow-right"
-          class="swiper__button swiper__button--prev"
-          iconPosBefore
-        />
-        <Button
-          icon="arrow-right"
-          class="swiper__button swiper__button--next"
-          iconPosBefore
-        />
-      </div>
+  <section>
+    <div class="list container">
+      <Button
+        text="Овации и свист 👏🏻😗"
+        className="bg-blue-900 bg-1"
+        data-sound="/assets/applause-wistle.mp3"
+      />
+      <Button
+        text="Овации 👏🏻"
+        className="bg-blue-900"
+        data-sound="/assets/applause.mp3"
+      />
+      <Button
+        text="Смех толпы 😄😄😄"
+        className="bg-2"
+        data-sound="/assets/crowd-laugth.mp3"
+      />
+      <Button text="Вздох 😱" data-sound="/assets/gasp.mp3" />
+      <Button
+        text="Цссссс! 🤫"
+        className="bg-3"
+        data-sound="/assets/silence.mp3"
+      />
+      <Button
+        text="Сухой пук 💩"
+        className="bg-amber-700"
+        data-sound="/assets/fart-dry.mp3"
+      />
     </div>
   </section>
-  <section>
-    <Container>
-      <Button
-        as="a"
-        target=""
-        href="/"
-        text="Стандартная модалка"
-        modal="example"
-      />
-      <Button text="Mодалка фиксированная по высоте" modal="policy" />
-    </Container>
-  </section>
-  <section>
-    <Container>
-      <div class="list" style="columns: 300px;">
-        {
-          [1, 2, 3].map(() => (
-            <TiltParent>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
-              quod, voluptates, quae, quos quidem quibusdam dolorum consequuntur
-              voluptatum nemo quia doloremque. Quisquam voluptates, quae, quos
-              quidem quibusdam dolorum consequuntur voluptatum nemo quia
-              doloremque.
-            </TiltParent>
-          ))
-        }
-
-        <TiltParent>
-          <img
-            src="https://picsum.photos/300/400"
-            width="300"
-            height="400"
-            alt="image"
-          />
-        </TiltParent>
-        <TiltParent>
-          <img
-            src="./assets/mountain-min.jpg"
-            width="320"
-            height="213"
-            alt="image"
-          />
-        </TiltParent>
-      </div>
-    </Container>
-  </section>
-
-  <Fragment slot="modals">
-    <Modal name="example">
-      <h3>Example modal</h3>
-      <button type="button" data-close-modal>закрыть</button>
-    </Modal>
-    <ModalPolicy />
-  </Fragment>
 </MainLayout>
+
+<style>
+  @property --rotate {
+    inherits: false;
+    initial-value: 0deg;
+    syntax: '<angle>';
+  }
+  .list {
+    @apply p-4 flex flex-wrap gap-4;
+
+    .button {
+      @apply relative flex-auto items-center justify-center min-h-[25vh] rounded-lg shadow-sm;
+
+      &:active {
+        animation: spin 2s linear;
+      }
+    }
+  }
+  .bg-1 {
+    background: repeating-conic-gradient(
+      from 45deg at 15% 15%,
+      #62364e 0 10deg,
+      #d03453 10deg 20deg,
+      #ffad66 20deg 30deg,
+      #ff8251 30deg 40deg,
+      #f35558 40deg 50deg
+    );
+  }
+  .bg-2 {
+    --rotate: -45deg;
+    background: repeating-linear-gradient(
+      var(--rotate, 45deg),
+      #8391ea,
+      #8391ea 10px,
+      #616ebc 10px,
+      #616ebc 20px
+    );
+  }
+
+  .bg-3 {
+    --rotate: 10deg;
+    background-image: repeating-linear-gradient(
+      var(--rotate, 10deg),
+      #ffd393,
+      #ffd393 5px,
+      #ff974f 5px,
+      #ff974f 20px,
+      #f54f29 20px,
+      #f54f29 22px
+    );
+  }
+  @keyframes spin {
+    to {
+      --rotate: 360deg;
+    }
+  }
+</style>

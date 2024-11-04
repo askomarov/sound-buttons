@@ -1,7 +1,5 @@
 ---
 import Layout from '@layouts/root/root';
-import Header from '@components/Header/Header';
-import Footer from '@components/Footer/Footer';
 
 interface Props {
   title: string;
@@ -13,10 +11,7 @@ const { title, description, className } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
-  <Header />
   <main class={className}>
     <slot />
   </main>
-  <Footer />
-  <slot name="modals" />
 </Layout>

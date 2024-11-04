@@ -2,40 +2,45 @@ import { defineConfig, squooshImageService } from 'astro/config';
 import viteSassGlob from 'vite-plugin-sass-glob-import';
 import icon from 'astro-icon';
 
+import tailwind from '@astrojs/tailwind';
 
 // https://astro.build/config
 export default defineConfig({
-  devToolbar: { enabled: false },
+  devToolbar: {
+    enabled: false
+  },
   site: 'https://askomarov.github.io',
   compressHTML: false,
   output: 'static',
   publicDir: './public',
   build: {
-    format: 'file', // вытаскивает вложенные страницы в корень src/pages/subpage/subpage.html => dist/subpage.html
+    format: 'file',
+    // вытаскивает вложенные страницы в корень src/pages/subpage/subpage.html => dist/subpage.html
     assets: 'assets',
-    assetsPrefix: '.', // добавляет `.` в пути скриптов и стилей
+    assetsPrefix: '.' // добавляет `.` в пути скриптов и стилей
     // inlineStylesheets: 'never', // запрещает инлайн стилей
   },
   image: {
-    service: squooshImageService(),
+    service: squooshImageService()
   },
   integrations: [
     icon({
       svgoOptions: {
-        plugins: [
-          'preset-default'
-        ],
-      },
-    })
+        plugins: ['preset-default']
+      }
+    }),
+    tailwind()
   ],
   vite: {
     css: {
-      devSourcemap: true,
+      devSourcemap: true
     },
     build: {
       minify: false,
-      assetsInlineLimit: 0, // запрещает инлайн скриптов. по дефолту инлайнит скрипты в html
-      cssCodeSplit: false, // css в один файл
+      assetsInlineLimit: 0,
+      // запрещает инлайн скриптов. по дефолту инлайнит скрипты в html
+      cssCodeSplit: false,
+      // css в один файл
       rollupOptions: {
         output: {
           entryFileNames: 'scripts.js',
@@ -43,12 +48,10 @@ export default defineConfig({
             return assetInfo.name === 'style.css'
               ? `${assetInfo.name}` // задается имя и папка (корень) для css
               : `assets/${assetInfo.name}`; // задается имя и папка картинкам
-          },
-        },
-      },
+          }
+        }
+      }
     },
-    plugins: [
-      viteSassGlob()
-    ],
-  },
+    plugins: [viteSassGlob()]
+  }
 });

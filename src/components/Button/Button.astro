@@ -1,40 +1,58 @@
 ---
 import { Icon } from 'astro-icon/components';
-import type { HTMLTag, Polymorphic } from 'astro/types';
+import type { HTMLAttributes } from 'astro/types';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { twMerge } from 'tailwind-merge';
 
-type Props<Tag extends HTMLTag> = Polymorphic<
-  { as: Tag } & {
-    text?: string;
-    className?: string;
-    mods?: string[];
-    size?: 'xl' | 'lg' | 'md' | 'sm' | 'xs';
-    icon?: string;
-    iconPosBefore?: boolean;
-    modal?: string;
-  }
->;
+const button = cva('button sound-button', {
+  variants: {
+    intent: {
+      primary: [
+        'bg-blue-500',
+        'text-white',
+        'border-transparent',
+        'hover:bg-blue-600'
+      ],
+      secondary: [
+        'bg-white',
+        'text-gray-800',
+        'border-gray-400',
+        'hover:bg-gray-100'
+      ]
+    },
+    size: {
+      small: ['text-xl', 'py-1', 'px-2'],
+      medium: ['text-2xl', 'py-2', 'px-4', 'font-bold']
+    }
+  },
+  compoundVariants: [{ intent: 'primary', size: 'medium', class: 'uppercase' }]
+});
+
+export interface Props
+  extends HTMLAttributes<'button'>,
+    VariantProps<typeof button> {
+  text?: string;
+  className?: string;
+  size?: 'small' | 'medium';
+  icon?: string;
+  iconPosBefore?: boolean;
+}
 
 const {
-  as: Tag = 'button',
   className,
+  type = 'button',
   text,
-  mods,
-  size,
   icon,
   iconPosBefore,
-  modal,
+  intent = 'primary',
+  size = 'medium',
   ...props
 } = Astro.props;
 ---
 
-<Tag
-  class:list={[
-    'button',
-    size ? `button--${size}` : '',
-    mods?.map((mod: string) => `button--${mod}`),
-    className
-  ]}
-  data-open-modal={modal}
+<sound-button
+  class={twMerge(button({ className, intent, size }))}
+  type={type}
   {...props}
 >
   {
@@ -54,4 +72,49 @@ const {
       </span>
     )
   }
-</Tag>
+</sound-button>
+
+<style>
+  .button {
+    @apply inline-flex;
+  }
+</style>
+
+<script>
+   class SoundButton extends HTMLElement {
+
+     filepath: string;
+
+     constructor() {
+       super();
+       //  я хочу добавить путь к файлу через дата атрибут this.dataset.sound
+       this.filepath = this.dataset.sound;
+       this.init();
+     }
+     playFile() {
+       if (!this.filepath) {
+         // eslint-disable-next-line no-console
+         console.error('No sound file path provided');
+         return;
+       }
+       const context = new window.AudioContext();
+
+       fetch(this.filepath)
+         .then((response) => response.arrayBuffer())
+         .then((arrayBuffer) => context.decodeAudioData(arrayBuffer))
+         .then((audioBuffer) => {
+           const source = context.createBufferSource();
+           source.buffer = audioBuffer;
+           source.connect(context.destination);
+           source.start();
+         });
+     }
+     init() {
+       this.addEventListener('click', this.onButtonClickPlaySound);
+     }
+     onButtonClickPlaySound() {
+       this.playFile();
+     }
+   }
+   customElements.define('sound-button', SoundButton);
+</script>
